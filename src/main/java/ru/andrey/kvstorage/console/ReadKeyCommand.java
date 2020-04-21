@@ -6,8 +6,8 @@ import ru.andrey.kvstorage.logic.Database;
 import java.util.Optional;
 
 public class ReadKeyCommand implements DatabaseCommand {
-    ExecutionEnvironment env;
-    String[] options;
+    private ExecutionEnvironment env;
+    private String[] options;
 
     public ReadKeyCommand(ExecutionEnvironment newEnv, String[] newOptions) {
         env = newEnv;
@@ -21,8 +21,13 @@ public class ReadKeyCommand implements DatabaseCommand {
         }
         try {
             Optional<Database> base = env.getDatabase(options[0]);
-            String result = base.get().read(options[1], options[2]);
-            return DatabaseCommandResult.success(result);
+            if (base.isPresent()) {
+                String result = base.get().read(options[1], options[2]);
+                return DatabaseCommandResult.success(result);
+            } else {
+                return DatabaseCommandResult.error("Database doesn't exist!");
+            }
+
         } catch (Exception e) {
             return DatabaseCommandResult.error(e.getMessage());
         }

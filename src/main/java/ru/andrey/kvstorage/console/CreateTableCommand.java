@@ -6,8 +6,8 @@ import ru.andrey.kvstorage.logic.Database;
 import java.util.Optional;
 
 public class CreateTableCommand implements DatabaseCommand {
-    ExecutionEnvironment env;
-    String[] options;
+    private ExecutionEnvironment env;
+    private String[] options;
 
     public CreateTableCommand(ExecutionEnvironment newEnv, String[] newOptions) {
         env = newEnv;
@@ -21,8 +21,13 @@ public class CreateTableCommand implements DatabaseCommand {
         }
         try {
             Optional<Database> base = env.getDatabase(options[0]);
-            base.get().createTableIfNotExists(options[1]);
-            return DatabaseCommandResult.success("Table was created");
+            if (base.isPresent()) {
+                base.get().createTableIfNotExists(options[1]);
+                return DatabaseCommandResult.success("Table was created");
+            } else {
+                return DatabaseCommandResult.error("Database doesn't exist!");
+            }
+
         } catch (Exception e) {
             return DatabaseCommandResult.error(e.getMessage());
         }

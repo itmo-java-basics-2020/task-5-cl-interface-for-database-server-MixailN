@@ -16,26 +16,31 @@ public interface DatabaseCommandResult {
         SUCCESS, FAILED
     }
 
-    static DatabaseCommandResult success(String newInfo) {
-        return new SomeResult(true, newInfo);
+    static DatabaseCommandResult success(String result) {
+        return new SomeResult(true, result);
     }
 
-    static DatabaseCommandResult error(String newInfo) {
-        return new SomeResult(false, newInfo);
+    static DatabaseCommandResult error(String errorMessage) {
+        return new SomeResult(false, errorMessage);
     }
 
     class SomeResult implements DatabaseCommandResult {
-        String info;
+        String result;
+        String errorMessage;
         boolean isSucceeded;
 
         private SomeResult(boolean isSucceeded, String newInfo) {
             this.isSucceeded = isSucceeded;
-            info = newInfo;
+            if (isSucceeded) {
+                result = newInfo;
+            } else {
+                errorMessage = newInfo;
+            }
         }
 
         @Override
         public Optional<String> getResult() {
-            return isSucceeded ? Optional.of(info) : Optional.empty();
+            return Optional.of(result);
         }
 
         @Override
@@ -50,7 +55,7 @@ public interface DatabaseCommandResult {
 
         @Override
         public String getErrorMessage() {
-            return isSucceeded ? null : info;
+            return errorMessage;
         }
     }
 }

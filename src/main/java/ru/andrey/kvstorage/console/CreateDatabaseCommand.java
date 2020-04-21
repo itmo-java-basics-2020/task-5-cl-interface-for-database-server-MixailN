@@ -3,8 +3,8 @@ package ru.andrey.kvstorage.console;
 import ru.andrey.kvstorage.exception.DatabaseException;
 
 public class CreateDatabaseCommand implements DatabaseCommand {
-    ExecutionEnvironment env;
-    String[] options;
+    private ExecutionEnvironment env;
+    private String[] options;
 
     public CreateDatabaseCommand(ExecutionEnvironment newEnv, String[] newOptions) {
         env = newEnv;
